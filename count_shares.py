@@ -1,6 +1,7 @@
 #!/usr/local/bin/python3
 import urllib.request
 import json
+import datetime
 
 ###
 # Script counts Facebook shares of url and its variations
@@ -46,6 +47,8 @@ def stringify_result(name, _count):
 
 if __name__ == '__main__':
     with open('count.txt', 'w') as f:
+        f.write(str(datetime.datetime.now()) + '\n')
+
         f.write(stringify_result(url, count_fb_shares(url)))
         f.write(stringify_result(url + '/', count_fb_shares(url + '/')))
 
