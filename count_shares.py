@@ -7,7 +7,7 @@ import json
 # with different values (integers) of specified parameter
 ###
 
-url = 'https://yandex.ru/company/researches/2017/moscow_districts' # target url
+url = 'https://yandex.ru/company/researches/2017/moscow_districts/' # target url
 api_url = 'https://graph.facebook.com/?fields=share&id=' # Facebook api url
 param_codes = range(118)  # range of integers in parameters of url or None
 param_name = 'res'  # name of parameter containing codes
@@ -21,11 +21,16 @@ with open('TOKEN', 'r') as f:
 
 # You can add human-readable labels for your codes in parameters.
 # Save them in param_names file in the same order as codes go (1-...)
-add_names = True
+add_names = False
 if param_codes and add_names:
     with open('param_names.txt', 'r') as f:
         param_names = f.readlines()
         param_names = [x.strip() for x in param_names]
+else:
+    param_names = [str(x+1) for x in param_codes]
+
+if url[-1] == '/':
+    url = url[:-1]
 
 def count_fb_shares(url, api_url=api_url):
     req_url = api_url + url + '&access_token=' + TOKEN
