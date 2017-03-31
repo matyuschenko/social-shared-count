@@ -11,7 +11,8 @@ import datetime
 url = 'https://yandex.ru/company/researches/2017/moscow_districts/' # target url
 fb_api_url = 'https://graph.facebook.com/?fields=share&id=' # Facebook api url
 vk_api_url = 'https://vk.com/share.php?act=count&url='  # VK api url
-param_codes = range(118)  # range of integers in parameters of url or None
+param_codes = range(5)  # range of integers in parameters of url or None
+add_names = True  # replace param codes with names in result
 param_name = 'res'  # name of parameter containing codes
 
 # You need to set up a Facebook app
@@ -23,7 +24,6 @@ with open('TOKEN', 'r') as f:
 
 # You can add human-readable labels for your codes in parameters.
 # Save them in param_names file in the same order as codes go (1-...)
-add_names = False
 if param_codes and add_names:
     with open('param_names.txt', 'r') as f:
         param_names = f.readlines()
