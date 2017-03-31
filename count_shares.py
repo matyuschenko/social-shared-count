@@ -9,7 +9,8 @@ import datetime
 ###
 
 url = 'https://yandex.ru/company/researches/2017/moscow_districts/' # target url
-api_url = 'https://graph.facebook.com/?fields=share&id=' # Facebook api url
+fb_api_url = 'https://graph.facebook.com/?fields=share&id=' # Facebook api url
+vk_api_url = 'https://vk.com/share.php?act=count&url='  # VK api url
 param_codes = range(118)  # range of integers in parameters of url or None
 param_name = 'res'  # name of parameter containing codes
 
@@ -33,27 +34,54 @@ else:
 if url[-1] == '/':
     url = url[:-1]
 
-def count_fb_shares(url, api_url=api_url):
-    req_url = api_url + url + '&access_token=' + TOKEN
-    with urllib.request.urlopen(req_url) as response:
-        html = response.read().decode('utf-8')
+def get_response(url):
+    with urllib.request.urlopen(url) as response:
+        return response.read().decode('utf-8')
 
-    _count = json.loads(html)['share']['share_count']
-    print(url + '\t' + str(_count))
+def parse_fb_response(text):
+    _count = str(json.loads(text)['share']['share_count'])
+    print('FB\t' + _count)
     return _count
 
-def stringify_result(name, _count):
-    return name + '\t' + str(_count) + '\n'
+def parse_vk_response(text):
+    _count = text\
+        .replace('VK.Share.count(0, ', '')\
+        .replace(');', '')
+    print('VK\t' + _count)
+    return _count
+
+def count_shares(url, social_name, api_url, token=''):
+    html = get_response(api_url + url + token)
+
+    print(url)
+    if social_name == 'fb':
+        _count = parse_fb_response(html)
+    elif social_name == 'vk':
+        _count = parse_vk_response(html)
+    return _count
+
+def stringify_result(name, *_counts):
+    return name + '\t' + '\t'.join(_counts) + '\n'
 
 if __name__ == '__main__':
     with open('count.txt', 'w') as f:
-        f.write(str(datetime.datetime.now()) + '\n')
+        f.write('Scraping time: ' + str(datetime.datetime.now()) + '\n')
+        f.write('url\tFB\VK\n')
 
-        f.write(stringify_result(url, count_fb_shares(url)))
-        f.write(stringify_result(url + '/', count_fb_shares(url + '/')))
+        f.write(stringify_result(
+            url,
+            count_shares(url, 'fb', fb_api_url, '&access_token=' + TOKEN),
+            count_shares(url, 'vk', vk_api_url)
+        ))
+        f.write(stringify_result(
+            url + '/',
+            count_shares(url + '/', 'fb', fb_api_url, '&access_token=' + TOKEN),
+            count_shares(url + '/', 'vk', vk_api_url)
+        ))
 
         if param_codes:
             for c in param_codes:
-                _count = count_fb_shares(url + '/?res=' + str(c+1))
-                result = stringify_result(param_names[c], _count)
+                _count_fb = count_shares(url + '/?res=' + str(c+1), 'fb', fb_api_url, '&access_token=' + TOKEN)
+                _count_vk = count_shares(url + '/?res=' + str(c+1), 'vk', vk_api_url)
+                result = stringify_result(param_names[c], _count_fb, _count_vk)
                 f.write(result)
