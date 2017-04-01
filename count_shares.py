@@ -66,7 +66,7 @@ def stringify_result(name, *_counts):
 if __name__ == '__main__':
     with open('count.txt', 'w') as f:
         f.write('Scraping time: ' + str(datetime.datetime.now()) + '\n')
-        f.write('url\tFB\VK\n')
+        f.write('url\tFB\tVK\n')
 
         f.write(stringify_result(
             url,
