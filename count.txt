@@ -1,9 +1,0 @@
-Scraping time: 2017-04-01 01:18:32.199622
-url	FB\VK
-https://yandex.ru/company/researches/2017/moscow_districts	329	44
-https://yandex.ru/company/researches/2017/moscow_districts/	155	57
-Result_1	130	8
-Result_2	10	0
-Result_3	4	0
-Result_4	19	1
-Result_5	49	0
