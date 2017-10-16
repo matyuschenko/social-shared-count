@@ -5,13 +5,13 @@ import json
 
 VK_API = 'https://vk.com/share.php'
 
-FB_API = 'https://graph.facebook.com/'
+FB_API = 'https://graph.facebook.com/v2.9/'
 
 def parse_vk_response(vk_response):
     return vk_response.split(', ')[1].split(');')[0]
 
 def parse_fb_response(fb_response):
-    return str(json.loads(fb_response)['share']['share_count'])
+    return str(json.loads(fb_response)['engagement']['share_count'])
 
 def get_count(url, fb_token=None):
     '''
@@ -29,7 +29,7 @@ def get_count(url, fb_token=None):
 
     # FB
     fb_api_params = {
-        'fields': 'share',
+        'fields': 'engagement',
         'id': url,
         'access_token': fb_token
     }
